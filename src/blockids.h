@@ -1,6 +1,8 @@
 #ifndef BLOCKIDS_H
 #define BLOCKIDS_H
 
+// all of the block ids in the world
+
 const int AIR_ID = 0;
 const int STONE_ID = 1;
 const int DIRT_ID = 2;

@@ -7,23 +7,25 @@
 #include "world.h"
 #include "blockids.h"
 
-
+// create a world with a random seed
 World::World()
 {
     m_seed = time(0); // get new seed from current time
     init();
 }
+// create a world with a given seed
 World::World(long s)
 {
     m_seed = s;
     init();
 }
+// load a saved world from the given directory
 World::World(long s, std::string &directory)
 {
     m_seed = s;
     init_LoadSavedWorld(directory);
 }
-
+// initialize and create the world
 void World::init()
 {
     std::cout << totalChunks << std::endl;
@@ -49,7 +51,7 @@ void World::init()
     }
     std::cout << "avg time/chunk: " << (((double)total/totalChunks) / CLOCKS_PER_SEC)*1000 << "ms\n";
 }
-
+// initialize and load the world
 void World::init_LoadSavedWorld(std::string &directory)
 {
     // im lazy, assumes file exists
@@ -77,7 +79,7 @@ void World::init_LoadSavedWorld(std::string &directory)
         }
     }
 }
-
+// creates all of the Block objects
 void World::initBlocks()
 {
     for(int i = 0; i < 255; i++)
@@ -93,7 +95,7 @@ void World::initBlocks()
     m_blockList[GABBRO_ID] = new BlockGabbro(GABBRO_ID);
     m_blockList[SAND_ID] = new BlockSand(SAND_ID);
 }
-
+// saves the world to given directory
 void World::saveWorld(std::string &directory)
 {
     std::ostringstream oss;
@@ -109,7 +111,9 @@ void World::saveWorld(std::string &directory)
         m_chunks[i]->saveToFile(outfile);
     }
 }
-
+// returns the block id at a given position
+// returns 0 if position is out of bounds, 
+// or in a chunk that does not exist
 int World::getBlockId(int x, int y, int z)
 {
     int chunkX = x >> 4;
@@ -119,6 +123,7 @@ int World::getBlockId(int x, int y, int z)
         return chunk->getBlockId(x, y, z);
     return 0;
 }
+// sets a a block at position (x,y,z) to id
 void World::setBlockId(int x, int y, int z, int id)
 {
     int chunkX = x >> 4;
@@ -130,6 +135,8 @@ void World::setBlockId(int x, int y, int z, int id)
         markBlockDirty(x, y, z);
     }
 }
+// marks a block and blocks around it dirty
+// marking a block dirty causes its VBO to be rebuilt
 void World::markBlockDirty(int x, int y, int z)
 {
     int chunkX = x >> 4;
@@ -153,16 +160,19 @@ void World::markBlockDirty(int x, int y, int z)
         chunk->markBlockDirty(x, y, z+1);
     
 }
+// returns a pointer to the block at a given position
 Block *World::getBlock(int x, int y, int z)
 {
     return getBlockFromId(getBlockId(x, y, z));
 }
+// returns a block pointer with a given id
 Block *World::getBlockFromId(int id)
 {
     if(id > 0 && id < 256)
         return m_blockList[id];
     return NULL;
 }
+// returns a chunk with chunk cooridinates x and z
 Chunk *World::chunkWithXZ(int x, int z)
 {
     if(x <= chunkHalfSide && x >= -chunkHalfSide && z <= chunkHalfSide && z >= -chunkHalfSide)
@@ -172,6 +182,7 @@ Chunk *World::chunkWithXZ(int x, int z)
             //return m_chunks[i];
     return NULL;
 }
+// renders the world
 void World::render(Camera &cam)
 {
     static bool first = true;
@@ -199,6 +210,7 @@ void World::render(Camera &cam)
     glDisableClientState( GL_VERTEX_ARRAY );
     glDisableClientState( GL_TEXTURE_COORD_ARRAY );
     glDisableClientState( GL_COLOR_ARRAY );
+    // debug info
     if(first)
     {
         first = false;
@@ -206,6 +218,7 @@ void World::render(Camera &cam)
     }
 }
 
+// returns true if a block has no transparency
 bool World::isBlockOpaque(int x, int y, int z)
 {
     Block *b = getBlock(x, y, z);
@@ -214,7 +227,7 @@ bool World::isBlockOpaque(int x, int y, int z)
     else
         return false;
 }
-
+// same as above but with id rather than position
 bool World::isBlockOpaque(int id)
 {
     Block *b = getBlockFromId(id);

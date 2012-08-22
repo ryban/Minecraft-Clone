@@ -24,7 +24,7 @@ VBOChunk::~VBOChunk()
 {
     deleteBuffers();
 }
-
+// calls each blocks renderToVBO function to create the VBO
 bool VBOChunk::buildVBO(World &world, std::vector<Vertex> *vb, std::vector<TexVert> *tb, std::vector<ColVert> *cb,
                         std::vector<Vertex> *tvb, std::vector<TexVert> *ttb, std::vector<ColVert> *tcb)
 {
@@ -59,9 +59,9 @@ bool VBOChunk::buildVBO(World &world, std::vector<Vertex> *vb, std::vector<TexVe
     {
         r = true;
         std::vector<Vertex>::iterator iter = vertBuffer->begin();
-        glGenBuffersARB(1, &m_VBOverticies);                  // Get A Valid Name
-        glBindBufferARB(GL_ARRAY_BUFFER_ARB, m_VBOverticies);         // Bind The Buffer
-        // Load The Data
+        glGenBuffersARB(1, &m_VBOverticies);                        // get a valid name
+        glBindBufferARB(GL_ARRAY_BUFFER_ARB, m_VBOverticies);       // bind the buffer
+        // load the data
         glBufferDataARB(GL_ARRAY_BUFFER_ARB, vertBuffer->size()*3*sizeof(float), &(*iter), GL_STATIC_DRAW_ARB);
 
         std::vector<TexVert>::iterator titer = texBuffer->begin();
@@ -92,8 +92,7 @@ bool VBOChunk::buildVBO(World &world, std::vector<Vertex> *vb, std::vector<TexVe
         glBindBufferARB(GL_ARRAY_BUFFER_ARB, m_transVBOcol);
         glBufferDataARB(GL_ARRAY_BUFFER_ARB, transColBuffer->size()*4*sizeof(float), &(*tcit), GL_STATIC_DRAW_ARB);
     }
- 
-    // only way to keep from using WAY to much memory
+
     vertBuffer->clear();
     texBuffer->clear();
     colBuffer->clear();
@@ -112,14 +111,14 @@ bool VBOChunk::buildVBO(World &world, std::vector<Vertex> *vb, std::vector<TexVe
 
     return r;
 }
-
+// deletes the current VBOs for the chunk, and rebuilds them
 bool VBOChunk::reBuildVBO(World &world, std::vector<Vertex> *vb, std::vector<TexVert> *tb, std::vector<ColVert> *cb,
                               std::vector<Vertex> *tvb, std::vector<TexVert> *ttb, std::vector<ColVert> *tcb)
 {
     deleteBuffers();
     return buildVBO(world, vb, tb, cb, tvb, ttb, tcb);
 }
-
+// deltes the VBOs
 void VBOChunk::deleteBuffers()
 {
     if(m_VBOverticies)
@@ -142,7 +141,7 @@ void VBOChunk::deleteBuffers()
     m_transVBOtex = 0;
     m_transVBOcol = 0;
 }
-
+// draws the non transparent VBO on screen
 void VBOChunk::render(Camera &cam)
 {
     glBindBufferARB(GL_ARRAY_BUFFER_ARB, m_VBOverticies);
@@ -161,7 +160,7 @@ void VBOChunk::render(Camera &cam)
         glDrawArrays(GL_QUADS, 0, vertexCount);
     glPopMatrix();
 }
-
+// draws the transparent VBO on screen
 void VBOChunk::renderTransparent(Camera &cam)
 {
     glBindBufferARB(GL_ARRAY_BUFFER_ARB, m_transVBOverticies);

@@ -1,6 +1,8 @@
 #ifndef CHUNK_H
 #define CHUNK_H
 
+// a class for handleing the 16x16x192 chunks of blocks 
+
 #include <list>
 #include <fstream>
 class Chunk;

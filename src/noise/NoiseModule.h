@@ -1,6 +1,10 @@
 #ifndef NOISEMODULE_H
 #define NOISEMODULE_H
 
+// a virtual base class for noise generators
+// most have the common octaves, scale(zoom), persistence, and seed values
+// the bounds might eventually get moves to their own Module
+
 #include "Module.h"
 
 namespace Noise

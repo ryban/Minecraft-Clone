@@ -1,6 +1,9 @@
 #ifndef VERTEX_H
 #define VERTEX_H
 
+// classes for generating and saveing
+// vertex buffer objects, VBOs
+
 #include <vector>
 class VBOChunk;
 #include "world.h"
@@ -30,6 +33,7 @@ class ColVert
         float a;
 };
 
+// a 16x16x16 block chunk of vertices that lives in VRAM for quick drawing
 class VBOChunk
 {
     private:

@@ -12,7 +12,8 @@ namespace Noise
     {
         delete m_source;
     }
-
+    // checks if xy are the same as teh stored values and returns the stored one if they are
+    // other wise get a new one
     double CacheModule::getValue(double x, double y)
     {
         if(m_stored_2d && m_storedX_2d == x && m_storedY_2d == y)
@@ -26,7 +27,7 @@ namespace Noise
             return m_storedValue_2d;
         }
     }
-
+    // same as 2d
     double CacheModule::getValue(double x, double y, double z)
     {
         if(m_stored_3d && m_storedX_3d == x && m_storedY_3d == y && m_storedZ_3d == z)

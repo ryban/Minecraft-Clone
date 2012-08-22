@@ -1,6 +1,8 @@
 #ifndef AABB_H
 #define AABB_H
 
+// axis aligned bounding box
+
 #include <SFML/System/Vector3.hpp>
 
 class AABB 

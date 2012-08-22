@@ -1,6 +1,10 @@
 #ifndef RENDERHELPER_H
 #define RENDERHELPER_H
 
+//namespace for rendering faces of blocks
+// really reduces the repetition that started to show
+// in block.cpp
+
 #include "block.h"
 #include "texcoords.h"
 #include "vertex.h"

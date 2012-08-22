@@ -1,6 +1,11 @@
 #ifndef CACHEMODULE_H
 #define CACHEMODULE_H
 
+// this module takes the output for a given source module
+// and saves it for a given position
+// it only tracks one positon at a time though
+// allows for quick access of the same value multiple times in a row
+
 #include "Module.h"
 
 namespace Noise

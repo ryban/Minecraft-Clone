@@ -1,6 +1,8 @@
 #ifndef CHUNKGENERATOR_H
 #define CHUNKGENERATOR_H
 
+// generates the terrain for chunks
+
 class ChunkGenerator;
 #include "chunk.h"
 #include "noise/Noise.h"
@@ -43,9 +45,4 @@ class ChunkGenerator
         double terrain_noise[XZsubdivisions][Ysubdivisions][XZsubdivisions];
 };
 
-/*
-inline double trilerp(double v000, double v100, double v010, double v110,
-               double v001, double v101, double v011, double v111,
-               double x, double y, double z);
-*/
 #endif

@@ -23,7 +23,7 @@ namespace Noise
     PerlinModule::~PerlinModule()
     {
     }
-
+    // pseudo random number magic
     double PerlinModule::noise2d(int x, int y)
     {
         int n = PRIME_X * x + PRIME_Y * y + PRIME_SEED * m_seed;
@@ -32,7 +32,7 @@ namespace Noise
         n = (n * (n*n*60493+19990303) + 1376312589) & 0x7fffffff;
         return (1.0 - (double)n/1073741824.0);
     }
-
+    // pseudo random number magic
     double PerlinModule::noise3d(int x, int y, int z)
     {
         int n = PRIME_X * x + PRIME_Y * y + PRIME_Z * z + PRIME_SEED * m_seed;
@@ -41,7 +41,7 @@ namespace Noise
         n = (n * (n*n*60493+19990303) + 1376312589) & 0x7fffffff;
         return (1.0 - (double)n/1073741824.0);
     }
-
+    // interpolates between the 4 corners of a square to get some smoothed noise
     double PerlinModule::noise2d_grad(double x, double y)
     {
         int x0 = x > 0.0 ? (int)x : (int)x-1;
@@ -57,7 +57,7 @@ namespace Noise
 
         return Utils::bilerp(v00, v10, v01, v11, x1, y1);
     }
-
+    // interpolates between the 8 corners of a cube for some smoothed noise
     double PerlinModule::noise3d_grad(double x, double y, double z)
     {
         int x0 = x > 0.0 ? (int)x : (int)x-1;

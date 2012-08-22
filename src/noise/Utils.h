@@ -3,6 +3,11 @@
 
 #include <cmath>
 
+// utility functions for generating noise
+// most are not used at the moment, but I found
+// them in a lot of noise functions so I thought
+// I would put them here, just in case.
+
 namespace Noise
 {
 namespace Utils

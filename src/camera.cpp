@@ -57,6 +57,7 @@ void Camera::lookAt(float x, float y, float z)
     setYaw(new_yaw);
     setPitch(new_pitch);
 }
+// rotates the OpenGL scene and updates the frustum
 void Camera::render()
 {
     float lx = cos(m_yaw);
@@ -68,7 +69,7 @@ void Camera::render()
 
     updateFrustum();    
 }
-
+// updates the frustum to the current OpenGL view
 void Camera::updateFrustum()
 {
     GLfloat modelViewMatrix[16];
@@ -150,7 +151,7 @@ void Camera::updateFrustum()
     planes[FAR][C] /= length;
     planes[FAR][D] /= length;
 }
-
+// checks if a sphere is inside or touches the side of the view frustum
 bool Camera::isSpereInFrustum(sf::Vector3<float> &point, float radius)
 {
     GLfloat distance;
@@ -162,7 +163,8 @@ bool Camera::isSpereInFrustum(sf::Vector3<float> &point, float radius)
     }
     return true;
 }
-
+// checks if a AABB is inside or touches the side of the view frustum
+// does not work properly
 bool Camera::isBoxInFrustum(AABB &box)
 {
     // not accurate

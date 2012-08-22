@@ -1,6 +1,11 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
+// Class for manipulating and keeping track of the cameras psotion in the world
+// the camera is always at the OpenGL origin, so when rendered most objects need the camera position
+// to render properly
+// also handles frustum culling
+
 #include <SFML/OpenGL.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>

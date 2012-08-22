@@ -5,10 +5,12 @@ namespace rh
     // for perfect cube
     void drawTopFace(VBOChunk &vbo, TexCoords &tex, int x, int y, int z)
     {
+        // get the bottom left coordinate
         float fx = x * BLOCK_SIZE;
         float fy = y * BLOCK_SIZE;
         float fz = z * BLOCK_SIZE;
 
+        // get the top right coordinate
         float fxx = fx + BLOCK_SIZE;
         float fyy = fy + BLOCK_SIZE;
         float fzz = fz + BLOCK_SIZE;

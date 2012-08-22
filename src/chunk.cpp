@@ -24,6 +24,7 @@ Chunk::~Chunk()
 
     delete [] m_vbos;
 }
+// creates a 3d array of empty bytes for blockids
 void Chunk::init()
 {
     m_blocks = new uint8_t**[16];
@@ -37,6 +38,8 @@ void Chunk::init()
     for(int i = 0; i < 12; i++)
         m_dirtyVBOs[i] = false;
 }
+// returns a block id for agiven position
+// if it is with the chunk
 int Chunk::getBlockId(int x, int y, int z)
 {
     if(y < 0 || y >= 192)
@@ -48,6 +51,8 @@ int Chunk::getBlockId(int x, int y, int z)
         return m_blocks[x][y][z];
     return -1;
 }
+// sets the block at a given position to id
+// if it is within the chunk
 void Chunk::setBlock(int x, int y, int z, int id)
 {
     if(!m_blocks)
@@ -61,6 +66,7 @@ void Chunk::setBlock(int x, int y, int z, int id)
 
     m_blocks[x][y][z] = (uint8_t)id;
 }
+// renders the chunks non transparent VBOs
 void Chunk::render(Camera &cam)
 {
     if(!m_hasVBO)
@@ -84,7 +90,7 @@ void Chunk::render(Camera &cam)
         }
     }
 }
-
+// renders the chunks transparent VBOs
 void Chunk::renderTransparent(Camera &cam)
 {
     if(!m_hasVBO)
@@ -108,7 +114,7 @@ void Chunk::renderTransparent(Camera &cam)
         }
     }
 }
-
+// checks if any VBO in the chunk needs and update
 bool Chunk::isDirty()
 {
     for(int i = 0; i < 12; i++)
@@ -116,7 +122,7 @@ bool Chunk::isDirty()
             return true;
     return false;
 }
-
+// cleans and rebuilds dirty VBOs for the chunk
 void Chunk::cleanVBOs()
 {
     std::vector<Vertex> vb; // vertex buffer
@@ -145,11 +151,14 @@ void Chunk::cleanVBOs()
         }
     }
 }
+// sets the 3d block array to b only if m_blocks is NULL
+// outdated
 void Chunk::setBlocks(uint8_t ***b)
 {
     if(!m_blocks)
         m_blocks = b;
 }
+// marks the VBO dirty that xyz lies in
 void Chunk::markBlockDirty(int x, int y, int z)
 {
     if(y < 0 || y >= 192)
@@ -166,6 +175,8 @@ void Chunk::markBlockDirty(int x, int y, int z)
     else if(y % 16 == 15 && y < 176) // 192-16 = 176 
         m_dirtyVBOs[y/16 + 1] = true;
 }
+// build the 12 VBOs for the chunk that live in GPUs VRAM
+// for very fast rendering of a lot of polygons
 void Chunk::buildVBOs()
 {
     std::vector<Vertex> vertBuff;
@@ -185,7 +196,7 @@ void Chunk::buildVBOs()
     }
     m_hasVBO = true;
 }
-
+// saves the chunk to a file
 void Chunk::saveToFile(std::ofstream &outfile)
 {
     // files should be opened in binary mode
@@ -194,6 +205,7 @@ void Chunk::saveToFile(std::ofstream &outfile)
             outfile.write((char *)m_blocks[x][y], 16);
     outfile.close();
 }
+// laods the chunk from a file
 void Chunk::loadFromFile(std::ifstream &infile)
 {
     if(!m_blocks)

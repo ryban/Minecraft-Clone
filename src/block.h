@@ -1,6 +1,9 @@
 #ifndef BLOCK_H
 #define BLOCK_H
 
+// all of the block classes in the game in one easy spot.
+// all blocks inherit the virtual class Block
+
 class Block;
 class BlockGrass;
 class BlockWater;

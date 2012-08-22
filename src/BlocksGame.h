@@ -1,6 +1,10 @@
 #ifndef BLOCKSGAME_H
 #define BLOCKSGAME_H
 
+// the starting point for the application
+// runs the main game loop
+// initializes, loads, and handles game objects
+
 #include <GL/glew.h>
 #include <GL/glut.h>
 #include <SFML/Graphics.hpp>

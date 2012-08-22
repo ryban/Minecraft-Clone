@@ -1,6 +1,9 @@
 #ifndef WORLD_H
 #define WORLD_H
 
+// world class that handles world rendering, generation,
+// load, saveing, and manipulation
+
 #include <ctime>
 #include <string>
 
@@ -20,7 +23,6 @@ class World
         World();
         World(long s);
         World(long s, std::string &directory);
-        ChunkGenerator *GetChunkGenerator();
         int getBlockId(int x, int y, int z);
         void setBlockId(int x, int y, int z, int id);
         void markBlockDirty(int x, int y, int z);

@@ -3,6 +3,11 @@
 
 #include "Module.h"
 
+// a module that selects between two other modules based on the source module
+// the threshold is the dividing line between the high and low sources
+// the fall off is the area where the teo sources are blended together
+// to create a smooth transition between them
+
 namespace Noise
 {
 

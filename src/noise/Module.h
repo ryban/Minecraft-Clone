@@ -1,6 +1,8 @@
 #ifndef MODULE_H
 #define MODULE_H
 
+// pure virtual class that all modules derive from
+
 namespace Noise
 {
 

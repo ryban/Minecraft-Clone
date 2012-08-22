@@ -4,6 +4,11 @@
 #include "Module.h"
 #include "NoiseModule.h"
 
+// the basic perlin noise module
+// uses some prime number psuedo random number generator magic
+// to get a random number based on coordinates and bi/tri linear
+// interpolation to generate a noise vale for a given position
+
 namespace Noise
 {
 

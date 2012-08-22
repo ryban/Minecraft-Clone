@@ -1,6 +1,9 @@
 #ifndef TEXCOORDS_H
 #define TEXCOORDS_H
 
+// class for turning simple texture coordinates into 
+// OpenGL texture UVs.
+
 class TexCoords
 {
     public:

@@ -11,6 +11,7 @@
 const float DEG_TO_RAD = M_PI / 180;
 const float RAD_90 = M_PI / 2;
 
+// initializes the window screen and the saves directory
 BlocksGame::BlocksGame()
 {
     SCREEN_WIDTH = 1366;
@@ -26,13 +27,15 @@ BlocksGame::~BlocksGame()
     m_window->close();
     delete m_window;
 }
-
+// initializes then runs the game
 void BlocksGame::go()
 {
     if(init())
         run();
 }
 
+// loads textures sets up the window, OpenGL,
+// and the world
 bool BlocksGame::init()
 {
     m_running = true;
@@ -86,13 +89,13 @@ bool BlocksGame::init()
 
     return true;
 }
-
+// exits the game
 void BlocksGame::quit()
 {
     m_running = false;
     m_window->close();
 }
-
+// the game loop
 void BlocksGame::run()
 {
     while(m_window->isOpen() && m_running)
@@ -105,6 +108,7 @@ void BlocksGame::run()
     }
 }
 
+// renders the world and any UI elements
 void BlocksGame::render(float dT)
 {
 
@@ -169,6 +173,8 @@ void BlocksGame::render(float dT)
         m_window->display();
 }
 
+// handles keyboard and mouse input to control the camera and
+// exit the program
 void BlocksGame::handleInput(float dT)
 {
     sf::Event event;
@@ -269,7 +275,7 @@ void BlocksGame::handleInput(float dT)
     }else if(!sf::Mouse::isButtonPressed(sf::Mouse::Left))
         leftMouseDown = false;
 }
-
+// draws a sphere of radius 10 at position
 void BlocksGame::drawSphereAt(sf::Vector3<float> position)
 {
     // draws a sphere of radius 10 at the give position
@@ -285,7 +291,7 @@ void BlocksGame::drawSphereAt(sf::Vector3<float> position)
 
     gluDeleteQuadric(quadric);
 }
-
+// draws block lines at the screen position, pos
 void BlocksGame::drawBlockLines(sf::Vector3<float> pos)
 {
     glPushMatrix();
@@ -331,7 +337,8 @@ void BlocksGame::drawBlockLines(sf::Vector3<float> pos)
         glEnd();
     glPopMatrix();
 }
-
+// gets the block position of that is centered in the camera
+// does not work properly
 sf::Vector3<int> BlocksGame::getBlockPosFromCam()
 {
     sf::Vector3<float> worldPos = getWorldCoordsAtScrenPos(SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
@@ -350,7 +357,8 @@ sf::Vector3<int> BlocksGame::getBlockPosFromCam()
 
     return blockPos;
 }
-
+// gets the world coordinates at the center of the screen
+// does work properly
 sf::Vector3<float> BlocksGame::getWorldCoordsAtScrenPos(int x, int y)
 {
     // to many calls to this in a single frame might slow things down
@@ -374,14 +382,14 @@ sf::Vector3<float> BlocksGame::getWorldCoordsAtScrenPos(int x, int y)
 
     return sf::Vector3<float>(posX, posY, posZ);
 }
-
+// checks if a file exits
 bool BlocksGame::file_exists(const char *filename)
 {
     // is this a good idea?
     std::ifstream ifile(filename);
     return ifile;
 }
-
+// takes the current screen and saves it in the screenshots folder
 void BlocksGame::takeScreenShot()
 {
     sf::Image screen = m_window->capture();

@@ -7,10 +7,13 @@
 ChunkGenerator::ChunkGenerator(long seed)
 {
     m_seed = seed;
-
+    // perlin noise that controls what type of terrain to generate
     terrainControl = new Noise::PerlinModule(m_seed, 4, 0.0025, 0.3, -1.0, 0.8);
+    // the cache makes it so that we don't waste time calling the same funciton on the same
+    // position over and over again, and saves time
     terrainControlCache = new Noise::CacheModule(terrainControl);
 
+    // terrain shapr for various terrain types
     mountains = new Noise::PerlinModule(m_seed+1, 5, 0.006, 0.65, 0.2, 1.0);
     hills = new Noise::PerlinModule(m_seed+2, 6, 0.004, 0.52, 0.1, 0.4);
     plains = new Noise::PerlinModule(m_seed+3, 4, 0.007, 0.4, 0.0, 0.2);
@@ -18,24 +21,31 @@ ChunkGenerator::ChunkGenerator(long seed)
 
     // ocean  plains  hills  mountains
     // -1 === -0.5 === 0.0 === 0.5 === 1
-
+    // each of these selects between the other type
+    // mountainHillSelect is the one used to select between all noises
     plainOceanSelect = new Noise::SelectModule(terrainControlCache, ocean, plains, -0.5, 0.2);
     hillPlainSelect = new Noise::SelectModule(terrainControlCache, plainOceanSelect, hills, 0.0, 0.2);
     mountainHillSelect = new Noise::SelectModule(terrainControlCache, hillPlainSelect, mountains, 0.5, 0.2);
 
+    // perlin noise for cave genreation
     cave_generator = new Noise::PerlinModule(m_seed + 13, 4, 0.05, 0.4, -1.0, 1.0);
 }
 ChunkGenerator::~ChunkGenerator()
 {
+    // deleteing mountainHillSelect deletes all
+    // of the classes contained within it. Cascades down
+    // and deletes all of the generators
+    delete mountainHillSelect;
+    delete cave_generator;
 }
 
+// generates the terrain for a chunk
 void ChunkGenerator::generateChunk(Chunk *chunk)
 {
     uint8_t ***blocks = chunk->getBlocks();
     int x_offset = chunk->getChunkX() * 16;
     int z_offset = chunk->getChunkZ() * 16;
 
-    //init_CaveNoise(chunk);
     init_TerrainNoise(chunk);
     for(int x = 0; x < 16; x++)
     {
@@ -57,7 +67,8 @@ void ChunkGenerator::generateChunk(Chunk *chunk)
     }
     decorateChunk(chunk);
 }
-
+// adds caves, grass, sand, and various colored stones
+// to the world
 void ChunkGenerator::decorateChunk(Chunk *chunk)
 {
     int x_offset = chunk->getChunkX() * 16;
@@ -91,7 +102,7 @@ void ChunkGenerator::decorateChunk(Chunk *chunk)
     }
 
     // caves and different stones
-    //init_CaveNoise(chunk);
+    init_CaveNoise(chunk);
 
     for(int x = 0; x < 16; x++)
     {
@@ -101,14 +112,14 @@ void ChunkGenerator::decorateChunk(Chunk *chunk)
             int zz = z + z_offset;
             for(int y = 0; y < 192; y++)
             {
-                /*
+                // make caves
                 if(y > 3 && chunk->GetBlockId(xx, y+1, zz) != 4 && chunk->GetBlockId(xx, y+2, zz) != 4)
                 {
                     double cave_n = GetCaveNoise(chunk, xx, y, zz);
                     if(cave_n > ((y-52)/192.0) * 2.0 && cave_n < ((y-16)/192.0) * 2.0 && chunk->GetBlockId(xx, y, zz) != 4)
                         chunk->SetBlock(xx, y, zz, 0);
                 }
-                */
+                // place stone layers
                 if(chunk->getBlockId(xx, y, zz) == STONE_ID)
                 {
                     if(y < heightMap[x][z]-104 + 16)
@@ -124,7 +135,7 @@ void ChunkGenerator::decorateChunk(Chunk *chunk)
         }
     }
 }
-
+// gets the top solid (non transparent) block id
 int ChunkGenerator::getTopSolidBlockY(Chunk *chunk, int x, int z, int startY, int stopY)
 {
     for(int y = startY; y >= stopY; y--)
@@ -132,7 +143,9 @@ int ChunkGenerator::getTopSolidBlockY(Chunk *chunk, int x, int z, int startY, in
             return y;
     return 0;
 }
-
+// initializes the cave noise at the corners of the 
+// 16x16x16 mini-chunk so we can interpolate the blocks
+// between and save a lot of time 
 void ChunkGenerator::init_CaveNoise(Chunk *chunk)
 {
     int chunkX = chunk->getChunkX()*16;
@@ -144,7 +157,13 @@ void ChunkGenerator::init_CaveNoise(Chunk *chunk)
                                                                 , y * 16
                                                                 , z*16+chunkZ);
 }
-
+// initialize the terrain noise to speed up terrain generation
+// the number of points to generate is modifiable.
+// 16 gives fast terrain, but looks odd
+// 8 is ok
+// 4 is good, what I use and no loss in speed compared to 8
+// 2 is horribly slow
+// 1 takes about 10 seconds to generate a single chunk
 void ChunkGenerator::init_TerrainNoise(Chunk *chunk)
 {
     int chunkX = chunk->getChunkX()*16;
@@ -157,6 +176,8 @@ void ChunkGenerator::init_TerrainNoise(Chunk *chunk)
                                                                 , z*subDivisionSize+chunkZ);
 }
 
+// gets whether a block should be solid or air at a given position
+// by interpolating between the points generated in init_CaveNoise(...)
 double ChunkGenerator::getCaveNoise(Chunk *chunk, int x, int y, int z)
 {
     int y0 = y / 16;
@@ -176,7 +197,8 @@ double ChunkGenerator::getCaveNoise(Chunk *chunk, int x, int y, int z)
 
     return Noise::Utils::trilerp(v000, v100, v010, v110, v001, v101, v011, v111, x1, y1, z1);
 }
-
+// gets whether a block should be solid or air at a given position
+// by interpolating between the points generated in init_TerrainNoise(...)
 double ChunkGenerator::getTerrainNoise(Chunk *chunk, int x, int y, int z)
 {
     int y0 = y / subDivisionSize;

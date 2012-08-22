@@ -55,7 +55,8 @@ namespace Noise
     {
         m_falloff = f;
     }
-
+    // gets the value at the position based on the source
+    // blend if in falloff area
     double SelectModule::getValue(double x, double y)
     {
         double n = m_control->getValue(x, y);
@@ -68,7 +69,8 @@ namespace Noise
                                m_lowSource->getValue(x, y),
                                0.5);
     }
-
+    // gets the value at the position based on the source
+    // blend if in falloff area
     double SelectModule::getValue(double x, double y, double z)
     {
         // always use 2d noise for the control
