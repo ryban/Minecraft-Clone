@@ -113,11 +113,11 @@ void ChunkGenerator::decorateChunk(Chunk *chunk)
             for(int y = 0; y < 192; y++)
             {
                 // make caves
-                if(y > 3 && chunk->GetBlockId(xx, y+1, zz) != 4 && chunk->GetBlockId(xx, y+2, zz) != 4)
+                if(y > 3 && chunk->getBlockId(xx, y+1, zz) != 4 && chunk->getBlockId(xx, y+2, zz) != 4)
                 {
-                    double cave_n = GetCaveNoise(chunk, xx, y, zz);
-                    if(cave_n > ((y-52)/192.0) * 2.0 && cave_n < ((y-16)/192.0) * 2.0 && chunk->GetBlockId(xx, y, zz) != 4)
-                        chunk->SetBlock(xx, y, zz, 0);
+                    double cave_n = getCaveNoise(chunk, xx, y, zz);
+                    if(cave_n > ((y-52)/192.0) * 2.0 && cave_n < ((y-16)/192.0) * 2.0 && chunk->getBlockId(xx, y, zz) != 4)
+                        chunk->setBlock(xx, y, zz, 0);
                 }
                 // place stone layers
                 if(chunk->getBlockId(xx, y, zz) == STONE_ID)

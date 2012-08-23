@@ -10,6 +10,7 @@ class Chunk;
 #include "vertex.h"
 #include "camera.h"
 #include "world.h"
+#include "chunkgenerator.h"
 
 #define uint8_t unsigned char
 
@@ -27,20 +28,24 @@ class Chunk
         int getChunkZ() { return m_chunkZ; }
 
         void setBlocks(uint8_t ***b);
-        uint8_t ***getBlocks() { return m_blocks; }
-
         void saveToFile(std::ofstream &outfile);
         void loadFromFile(std::ifstream &infile);
 
         bool isDirty();
+
+        friend class ChunkGenerator;
     private:
         void cleanVBOs();
         void buildVBOs();
         void init();
+        // function only used by ChunkGenerator
+        uint8_t ***getBlocks() { return m_blocks; }
+
         World *m_world;
         int m_chunkX;
         int m_chunkZ;
         bool m_hasVBO;
+        // being uint8_t *** adds ~24KB RAM per chunk on 64-bit systems
         uint8_t ***m_blocks;
         VBOChunk *m_vbos[12];
         bool m_dirtyVBOs[12];
